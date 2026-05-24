@@ -6,18 +6,20 @@ import {
   BarElement,
   LineElement,
   PointElement,
+  ArcElement,
   CategoryScale,
   LinearScale,
   Tooltip,
   Legend
 } from 'chart.js'
 
-import { Bar, Line } from 'react-chartjs-2'
+import { Bar, Line, Pie } from 'react-chartjs-2'
 
 ChartJS.register(
   BarElement,
   LineElement,
   PointElement,
+  ArcElement,
   CategoryScale,
   LinearScale,
   Tooltip,
@@ -50,8 +52,7 @@ function App() {
 
   const chartData = {
     labels: data.map(item => item.day),
-    datasets: [
-      {
+    datasets: [      {
         label: 'Deaths per 1M',
         data: data.map(item => item.new_deaths_per_1m)
       }
@@ -178,6 +179,59 @@ function App() {
         borderRadius: '10px'
       }}>
         <Line data={chartData} />
+      </div>
+
+            {/* PIE CHART */}
+      <div style={{
+        width: '500px',
+        margin: '0 auto 40px auto',
+        backgroundColor: 'white',
+        padding: '20px',
+        borderRadius: '10px'
+      }}>
+        <Pie
+          data={{
+            labels: [
+              'Low',
+              'Medium',
+              'High'
+            ],
+      datasets: [
+        {
+          label: 'Deaths per 1M',
+          data: [
+            data.filter(
+              item => item.new_deaths_per_1m < 1
+            ).length,
+
+            data.filter(
+              item =>
+                item.new_deaths_per_1m >= 1 &&
+                item.new_deaths_per_1m < 5
+            ).length,
+
+            data.filter(
+              item => item.new_deaths_per_1m >= 5
+            ).length
+          ],
+
+          backgroundColor: [
+            '#22c55e',
+            '#eab308',
+            '#ef4444'
+          ],
+
+          borderColor: [
+            '#15803d',
+            '#a16207',
+            '#b91c1c'
+          ],
+
+          borderWidth: 1
+        }
+      ]
+          }}
+        />
       </div>
 
       {/* TABLE */}
