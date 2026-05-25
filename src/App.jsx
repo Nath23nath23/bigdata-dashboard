@@ -151,7 +151,7 @@ function App() {
               data.length > 0
                 ? Math.max(
                     ...data.map(
-                      item => item.new_deaths_per_1m
+                      item => item.new_deaths_per_1m || 0
                     )
                   ).toFixed(2)
                 : 0
@@ -191,23 +191,32 @@ function App() {
 
             try {
 
-const highest =
-  Math.max(
-    ...data.map(
-      item => item.new_deaths_per_1m
-    )
-  ).toFixed(2)
+              if (data.length === 0) {
 
-const average =
-  (
-    data.reduce(
-      (sum, item) =>
-        sum + item.new_deaths_per_1m,
-      0
-    ) / data.length
-  ).toFixed(2)
+                setInsight(
+                  'No data available for analysis.'
+                )
 
-setInsight(`
+                return
+              }
+
+              const highest =
+                Math.max(
+                  ...data.map(
+                    item => item.new_deaths_per_1m || 0
+                  )
+                ).toFixed(2)
+
+              const average =
+                (
+                  data.reduce(
+                    (sum, item) =>
+                      sum + (item.new_deaths_per_1m || 0),
+                    0
+                  ) / data.length
+                ).toFixed(2)
+
+              setInsight(`
 COVID analysis for ${country}:
 
 • Highest death rate recorded:
@@ -256,7 +265,11 @@ public health response effectiveness.
 
         <h2>AI Insight</h2>
 
-        <p>{insight}</p>
+        <p style={{
+          whiteSpace: 'pre-line'
+        }}>
+          {insight}
+        </p>
 
       </div>
 
@@ -270,7 +283,13 @@ public health response effectiveness.
         borderRadius: '10px'
       }}>
 
-        <Bar data={chartData} />
+        <Bar
+          data={chartData}
+          options={{
+            responsive: true,
+            maintainAspectRatio: true
+          }}
+        />
 
       </div>
 
@@ -284,7 +303,13 @@ public health response effectiveness.
         borderRadius: '10px'
       }}>
 
-        <Line data={chartData} />
+        <Line
+          data={chartData}
+          options={{
+            responsive: true,
+            maintainAspectRatio: true
+          }}
+        />
 
       </div>
 
@@ -344,6 +369,11 @@ public health response effectiveness.
                 borderWidth: 1
               }
             ]
+          }}
+
+          options={{
+            responsive: true,
+            maintainAspectRatio: true
           }}
         />
 
